@@ -4,13 +4,154 @@
     {
       "id": "M2",
       "title": "Product foundation and data sources",
-      "status": "planned",
+      "status": "in-progress",
       "scope": "Start the product in its own git repository, in the workspace subfolder energy-forecast/, with its language, layout and test setup recorded in docs/decisions.md, and docs/known-limitations.md started. The configuration holds the site (location, time zone, solar peak power), the Prometheus URL and one PromQL query per signal (grid import and export, solar, battery, heating, indoor and outdoor temperature), so that the home's real metric names only touch the configuration. Read these signals from Prometheus onto a common 15-minute local-time grid, handling gaps and daylight saving time, and fetch the next 24 hours of temperature and solar/cloud forecast from a public weather service. Use answers/R1.md if it exists; the real Prometheus is not needed here. Done when one command prints these series from a configuration, the README says how to install and run it, and tests cover both sources from recorded or synthetic responses, without network.",
       "feedback": [],
       "after": [
         "M1"
       ],
-      "tasks": []
+      "tasks": [
+        {
+          "id": "M2.1",
+          "title": "Plan the milestone",
+          "status": "done",
+          "kind": "plan",
+          "criteria": [
+            "plan.json holds the milestone's tasks after this one, each small enough for one session, with a kind, checkable criteria (the behaviour, the tests that show it, the docs) and the note topics to read",
+            "Each task whose order matters names the tasks it needs in after",
+            "The last task closes the milestone: a review of the whole milestone, the docs and the known limitations"
+          ],
+          "origin": "golem",
+          "base": {
+            "workspace": "82fcf716068a7e7d88bf31b2960b4aec3f3537fd",
+            "product": "none"
+          },
+          "summary": "Planned M2 into M2.2 (repository, layout, test setup, configuration), M2.3 (15-minute local-time grid, DST, gaps), M2.4 (Prometheus reader), M2.5 (Open-Meteo forecast), M2.6 (the one command and the README) and M2.7 (closing review). Added notes/environment.md and notes/data-sources.md, with the facts probed for the plan: the machine's Python 3.10 without tomllib, and Open-Meteo's local times that ignore daylight saving. No task waits on R1 or R2: M2 runs on synthetic data, and the product stays committed locally until R2 is answered."
+        },
+        {
+          "id": "M2.2",
+          "title": "Start the product: repository, layout, test setup and configuration",
+          "status": "planned",
+          "kind": "code",
+          "details": "Create energy-forecast/ as its own git repository. Python is the expected language (simple numeric fits in M3, a Prometheus client in M4); the session decides and records why. R2 is open, so there is no remote: when answers/R2.md exists, add the remote and push; otherwise commit locally and say so in the summary. When answers/R1.md exists, use its facts in the example configuration; otherwise use placeholder metric names. Signals: grid_import, grid_export, solar, battery, heating, indoor_temperature, outdoor_temperature.",
+          "notes": [
+            "environment"
+          ],
+          "criteria": [
+            "energy-forecast/ is a git repository of its own with the work committed, and the workspace's .gitignore names it, so that git add . from the workspace stages neither its files nor a gitlink",
+            "docs/decisions.md records the language and its minimum version, each dependency with its reason, the layout, the test setup and the configuration format; docs/known-limitations.md exists and names the missing remote while R2 is open",
+            "The product installs into a new virtual environment with one documented command, and the test suite runs from there without network",
+            "Loading a configuration file gives the site (latitude, longitude, time zone, solar peak power), the Prometheus URL and one PromQL query for each of the seven signals",
+            "Tests show that a valid file loads, and that a missing field, an unknown signal, an unknown time zone, an out-of-range latitude and a negative peak power each give an error naming the field",
+            "An example configuration in the repository states the unit and sign of each signal (power in W, temperature in °C, the battery's sign), a test loads it, and no metric name appears in the code outside configuration and test data"
+          ]
+        },
+        {
+          "id": "M2.3",
+          "title": "The common 15-minute local-time grid",
+          "status": "planned",
+          "kind": "code",
+          "details": "One small module that both sources use. Slots are defined on UTC instants and their local time comes from the site's time zone; a slot is labelled by its start and covers the 15 minutes after it. Missing values stay visible, so that M3 and later analysis can tell measured values from filled ones.",
+          "notes": [
+            "environment",
+            "data-sources"
+          ],
+          "after": [
+            "M2.2"
+          ],
+          "criteria": [
+            "A function gives the slots of a time range in the site's time zone, each with its UTC instant and its local time with UTC offset, aligned on :00, :15, :30 and :45 local",
+            "Tests for Europe/Brussels show 96 slots on an ordinary day, 92 on 2026-03-29 with no local 02:xx slot, and 100 on 2026-10-25 with 02:00 twice, told apart by their offsets +02:00 and +01:00",
+            "A function places timestamped samples on the slots: samples within one slot are averaged, samples outside the range are ignored, and a slot without a sample holds an explicit missing value, never zero; tests include an empty input",
+            "Runs of missing slots up to a limit from the configuration are filled by linear interpolation and flagged as filled, and longer runs stay missing; tests cover a run at the limit, one past it, runs at the start and end of the series (not filled) and a run across a daylight saving change",
+            "docs/decisions.md records the slot's label convention, the representation of a missing value and the gap rule"
+          ]
+        },
+        {
+          "id": "M2.4",
+          "title": "Read the signals from Prometheus onto the grid",
+          "status": "planned",
+          "kind": "code",
+          "details": "One query_range per configured signal, evaluated at the slots' ends, so that avg_over_time(x[15m]) lands on the slot that it covers. Tests use synthetic responses in the format of the Prometheus HTTP API, from a fake transport or a loopback server: the real Prometheus is not needed. Use answers/R1.md if it exists.",
+          "notes": [
+            "environment",
+            "data-sources"
+          ],
+          "after": [
+            "M2.3"
+          ],
+          "criteria": [
+            "For a range of slots, the reader calls /api/v1/query_range once per signal with a 15-minute step and returns one grid series per signal; a test checks the query, start, end and step sent, and that a value evaluated at a slot's end lands on the slot that starts 15 minutes earlier",
+            "A range of more than 11,000 steps is split into several requests; a test over 120 days finds every slot exactly once",
+            "Absent samples and the values NaN and +Inf become missing slots, and a query with an empty result gives an all-missing series with a warning naming the signal; tests include a gap and a range across 2026-10-25",
+            "An unreachable server, a timeout, a non-200 reply, a body with status error and a query returning more than one series each give an error naming the signal and its query, with a test for each",
+            "The docs say how to write a signal's query (avg_over_time for gauges, rate for counters, clamp_min for one signed metric, unit conversion), and the example configuration uses these forms",
+            "The tests reach no network beyond loopback"
+          ]
+        },
+        {
+          "id": "M2.5",
+          "title": "Fetch the next 24 hours of weather forecast onto the grid",
+          "status": "planned",
+          "kind": "code",
+          "details": "Open-Meteo is the expected service: no key, 15-minute data (see the note for its traps). The fetch takes the slots that it must fill, not a fixed 'next 24 hours', because M3's solar factor will also ask for past values; build no history feature now. The service's URL has a default, and the configuration can override it for tests.",
+          "notes": [
+            "environment",
+            "data-sources"
+          ],
+          "after": [
+            "M2.3"
+          ],
+          "criteria": [
+            "For the site's latitude and longitude, the fetch returns temperature (°C), cloud cover (%) and solar radiation (W/m²) as grid series over the next 96 slots, from the first slot boundary after now",
+            "Times come from unix timestamps, never from the service's local strings; a test with a recorded response across 2026-10-25 puts each value on its slot, with local 02:xx appearing twice",
+            "A test with known values shows a radiation mean stamped T on the slot that starts at T-15min, and temperature and cloud cover stamped T on the slot that starts at T",
+            "An unreachable service, a timeout and an HTTP error with its reason each give an error that carries the reason; a null value, an absent variable or a response too short give missing slots with a warning; a test for each",
+            "Tests run from a real response recorded in the test data, plus synthetic ones, without network",
+            "docs/decisions.md records the choice of service, with its terms of use, and docs/known-limitations.md records its limits, such as 15-minute data being interpolated outside Central Europe and North America"
+          ]
+        },
+        {
+          "id": "M2.6",
+          "title": "One command prints the series from a configuration",
+          "status": "planned",
+          "kind": "code",
+          "notes": [
+            "environment",
+            "data-sources"
+          ],
+          "after": [
+            "M2.4",
+            "M2.5"
+          ],
+          "criteria": [
+            "One command, given a configuration file and a number of past days, prints the Prometheus signals over the past range and the weather forecast over the next 24 hours, one row per slot, with the local time and UTC offset and one column per series, missing values empty and filled values flagged; the README documents this format",
+            "The command gives each series' counts of measured, filled and missing slots on stderr, so that stdout stays parseable",
+            "When one source fails, the message names it, the other source is still printed and the exit code is non-zero; an invalid configuration gives its message and a non-zero exit code; tests show both",
+            "An end-to-end test runs the command against fake Prometheus and weather servers on loopback, their URLs from the configuration, and checks the printed rows, including a gap and a range across a daylight saving change",
+            "The README says how to install on a new machine, write the configuration, run the command and run the tests, with sample output from a real run of the command"
+          ]
+        },
+        {
+          "id": "M2.7",
+          "title": "Close the milestone: review against the scope, docs and known limitations",
+          "status": "planned",
+          "kind": "code",
+          "notes": [
+            "environment",
+            "data-sources"
+          ],
+          "after": [
+            "M2.6"
+          ],
+          "criteria": [
+            "Each sentence of M2's scope is checked against the product, what falls short is fixed, and the summary gives the result",
+            "The README's install and run steps were followed from a fresh clone in a new virtual environment, and the whole test suite passes there with the outside network blocked",
+            "The command was run once against the real weather service, and the fields of its response match the response recorded in the test data, or the recording and the code are updated",
+            "docs/decisions.md holds the milestone's significant choices, and docs/known-limitations.md says what is left: no run against a real Prometheus (R1), the placeholder metric names, and the missing remote while R2 is open"
+          ]
+        }
+      ]
     },
     {
       "id": "M3",

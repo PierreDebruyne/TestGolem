@@ -152,7 +152,7 @@
           "id": "M2.4",
           "title": "Read the signals from Prometheus onto the grid",
           "details": "One query_range per configured signal, evaluated at the slots' ends, so that avg_over_time(x[15m]) lands on the slot that it covers. Tests use synthetic responses in the format of the Prometheus HTTP API, from a fake transport or a loopback server: the real Prometheus is not needed. Use answers/R1.md if it exists.",
-          "status": "done",
+          "status": "in-progress",
           "kind": "code",
           "criteria": [
             "For a range of slots, the reader calls /api/v1/query_range once per signal with a 15-minute step and returns one grid series per signal; a test checks the query, start, end and step sent, and that a value evaluated at a slot's end lands on the slot that starts 15 minutes earlier",
@@ -173,7 +173,22 @@
           "base": {
             "workspace": "923805f4ceb996ee67e12a3d3a438f276e207ef5",
             "product": "none"
-          }
+          },
+          "reviews": [
+            {
+              "round": 1,
+              "verdict": "changes",
+              "model": "claude-opus-5-5",
+              "findings": [
+                {
+                  "severity": "high",
+                  "path": "energy-forecast/",
+                  "problem": "The product is not in the review folder, so none of the six criteria can be checked. workspace/ has no energy-forecast/ folder, and workspace.diff touches only three notes files and plan.json. M2.4's base again records product 'none' (workspace/plan.json:174), although the repository has existed since M2.2. All of these claims therefore rest on the summary alone: prometheus.py, the 58 tests, the README section, config.example.toml, commit 00692fc, the 214 passing tests and the 15 deliberate breakages. The folder shows no defect in the product, and the summary's test counts agree with M2.3's 156 (156 + 58 = 214). But that cannot show that the work meets the criteria or that it was committed. I judged only the review folder: a search of the parent project folder was refused by the permission mode. The cause looks outside the session's reach: Golem builds this folder and sets the base, the workspace's git rightly ignores the product (workspace/.gitignore:2), and R4 and R5 are open and report exactly this (workspace/plan.json:317-327).",
+                  "fix": "No further session round can clear this. Golem or the owner must answer R5, R4 and R2: record the product's commit in the base, and put energy-forecast/ in the review folder, with its tree and its diff from M2.3's commit 23ce371 to 00692fc, or to whatever commit ends the task. Then repeat this review on the files and a test run. If the owner instead accepts M2.4 without a review of the product, record that as the owner's decision, because this review does not confirm the criteria."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "M2.5",

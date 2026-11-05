@@ -26,7 +26,15 @@
           "base": {
             "workspace": "82fcf716068a7e7d88bf31b2960b4aec3f3537fd",
             "product": "none"
-          }
+          },
+          "reviews": [
+            {
+              "round": 1,
+              "verdict": "approve",
+              "model": "claude-opus-5-5",
+              "findings": []
+            }
+          ]
         },
         {
           "id": "M2.2",

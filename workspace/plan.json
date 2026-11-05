@@ -132,6 +132,19 @@
                   "fix": "Golem or the owner should answer R4 and R2: name energy-forecast/ as the product folder, then put its tree and its diff from M2.3's real base commit in the review folder, and repeat this review. That review should judge the five criteria on the files and a test run. The session should also check that the work is committed (git -C energy-forecast log, status) and add to R4 that M2.3's base is also 'none' and its review also lacked the product. If the owner instead accepts the task without a review of the product, record that as their decision, because this review does not confirm the criteria."
                 }
               ]
+            },
+            {
+              "round": 2,
+              "verdict": "changes",
+              "model": "claude-opus-5-5",
+              "findings": [
+                {
+                  "severity": "high",
+                  "path": "energy-forecast/",
+                  "problem": "Round 1's finding still stands: the product is not in the review folder, so none of the five criteria can be checked. workspace/ still has no energy-forecast/ folder, workspace.diff still touches only three notes files and plan.json, and M2.3's base still says product 'none' (workspace/plan.json:120). The session's claims stay unconfirmed: commit 23ce371 on top of 8b51870, a clean status, and all 156 tests passing in a fresh clone. The session did what the finding left to it, as far as the folder can show. It recorded the commit check in its summary and added R5 (workspace/plan.json:305). R5 instead of an addition to R4 is correct, because WORKFLOW.md:53 lets a session change only the requests that it adds. The session also says plainly that no review has confirmed the criteria. The folder shows no defect in the product, but it cannot show that the work meets the criteria or that it was committed.",
+                  "fix": "No further session work can clear this. Golem or the owner must answer R5, R4 and R2: record the product's commit in the base, put energy-forecast/ (its tree and its diff from 8b51870 to 23ce371, or to whatever commit ends the task) in the review folder, then repeat this review on the files and a test run. If the owner instead accepts M2.3 without a review of the product, record that as the owner's decision, because this review does not confirm the criteria."
+                }
+              ]
             }
           ]
         },

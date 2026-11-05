@@ -1,0 +1,13 @@
+{
+  "format": 1,
+  "verdicts": [
+    {
+      "milestone": "M1",
+      "verdict": "approved",
+      "sha256": "1e7e2f94c833d4ed2c3bb9dc1324432eb25f9c9b122650361b60a2a17804584e",
+      "at": "2026-11-05T13:15:41Z",
+      "by": "pierre",
+      "note": null
+    }
+  ]
+}

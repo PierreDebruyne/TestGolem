@@ -98,7 +98,7 @@
           "id": "M2.3",
           "title": "The common 15-minute local-time grid",
           "details": "One small module that both sources use. Slots are defined on UTC instants and their local time comes from the site's time zone; a slot is labelled by its start and covers the 15 minutes after it. Missing values stay visible, so that M3 and later analysis can tell measured values from filled ones.",
-          "status": "done",
+          "status": "in-progress",
           "kind": "code",
           "criteria": [
             "A function gives the slots of a time range in the site's time zone, each with its UTC instant and its local time with UTC offset, aligned on :00, :15, :30 and :45 local",
@@ -118,7 +118,22 @@
           "base": {
             "workspace": "b3f824e7bdbb3a5782f2ba49c51374b75654c7b6",
             "product": "none"
-          }
+          },
+          "reviews": [
+            {
+              "round": 1,
+              "verdict": "changes",
+              "model": "claude-opus-5-5",
+              "findings": [
+                {
+                  "severity": "high",
+                  "path": "energy-forecast/",
+                  "problem": "The product is not in the review folder, so none of the five criteria can be checked. workspace/ has no energy-forecast/ folder, and workspace.diff touches only notes/README.md, notes/data-sources.md, notes/environment.md and plan.json. All five criteria concern product files (grid.py, tests/test_grid.py, the configuration, docs/decisions.md), and the summary's claims about them, including the 156 passing tests, stay unconfirmed. The folder shows no defect in the product, and it cannot rule out that the work was never committed. The cause looks outside the session's reach: the workspace's git rightly ignores the product (workspace/.gitignore:2), Golem builds the review folder, and VISION.md names no product folder. M2.3's base still records product 'none' (workspace/plan.json:119), although M2.2 created the repository. That contradicts R4's hope that later tasks would have a product to record in their base (workspace/plan.json:286), so every later product review will hit the same gap until R4 is answered.",
+                  "fix": "Golem or the owner should answer R4 and R2: name energy-forecast/ as the product folder, then put its tree and its diff from M2.3's real base commit in the review folder, and repeat this review. That review should judge the five criteria on the files and a test run. The session should also check that the work is committed (git -C energy-forecast log, status) and add to R4 that M2.3's base is also 'none' and its review also lacked the product. If the owner instead accepts the task without a review of the product, record that as their decision, because this review does not confirm the criteria."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "M2.4",

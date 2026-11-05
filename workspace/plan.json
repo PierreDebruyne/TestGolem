@@ -18,11 +18,11 @@
             "The new milestones have no tasks yet: each is planned when it starts"
           ],
           "origin": "golem",
+          "summary": "Planned M2 Product foundation and data sources, M3 First complete 24-hour forecast, M4 Forecast service, metrics and archive, M5 Forecast against reality, and M6 Run on the home's data and improve the weakest part, then M7 Plan the next milestones to end the plan. They follow VISION.md's advice: a simple version of every input first, then measure, then improve. FEEDBACKS.md has no items, and the product, its docs/known-limitations.md and history/ do not exist yet, so VISION.md is the only source and each feedback list is empty. Battery control and the electric car stay out, for the next planning. Added requests R1 (Prometheus access and site facts, needed by M6) and R2 (the product's remote and VISION.md's wording); no task exists yet to wait on them, so the session that plans M6 puts R1 in the waiting_on of its tasks.",
           "base": {
             "workspace": "c8fd18fa441108e1dc76650e8f58055d501be571",
             "product": "none"
-          },
-          "summary": "Planned M2 Product foundation and data sources, M3 First complete 24-hour forecast, M4 Forecast service, metrics and archive, M5 Forecast against reality, and M6 Run on the home's data and improve the weakest part, then M7 Plan the next milestones to end the plan. They follow VISION.md's advice: a simple version of every input first, then measure, then improve. FEEDBACKS.md has no items, and the product, its docs/known-limitations.md and history/ do not exist yet, so VISION.md is the only source and each feedback list is empty. Battery control and the electric car stay out, for the next planning. Added requests R1 (Prometheus access and site facts, needed by M6) and R2 (the product's remote and VISION.md's wording); no task exists yet to wait on them, so the session that plans M6 puts R1 in the waiting_on of its tasks."
+          }
         }
       ]
     },

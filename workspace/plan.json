@@ -40,7 +40,7 @@
           "id": "M2.2",
           "title": "Start the product: repository, layout, test setup and configuration",
           "details": "Create energy-forecast/ as its own git repository. Python is the expected language (simple numeric fits in M3, a Prometheus client in M4); the session decides and records why. R2 is open, so there is no remote: when answers/R2.md exists, add the remote and push; otherwise commit locally and say so in the summary. When answers/R1.md exists, use its facts in the example configuration; otherwise use placeholder metric names. Signals: grid_import, grid_export, solar, battery, heating, indoor_temperature, outdoor_temperature.",
-          "status": "in-progress",
+          "status": "done",
           "kind": "code",
           "criteria": [
             "energy-forecast/ is a git repository of its own with the work committed, and the workspace's .gitignore names it, so that git add . from the workspace stages neither its files nor a gitlink",
@@ -53,7 +53,7 @@
           "notes": [
             "environment"
           ],
-          "summary": "Started energy-forecast/ as its own git repository, committed locally only: R2 is open, so it has no remote, as docs/known-limitations.md says. The workspace's .gitignore names it. Python 3.10 or later, with the choices in docs/decisions.md; src/energy_forecast/config.py gives load_config, whose ConfigError names the field; config.example.toml has placeholder site values and metric names (R1 is open) and states each signal's unit and sign; tests/conftest.py fails any test that connects beyond loopback. 80 tests pass, also under unshare -rn. One thing differs from what criterion 3 suggests: the documented install command fails with this machine's system Python, which lacks python3.10-venv (M2.1's note wrongly had it working, now corrected). I could not install that package, so R3 asks for it, with no task waiting on it. I checked the command as written from a fresh clone with pyenv's base 3.12.13, used read-only in a temporary folder despite the note's advice against pyenv; on the system 3.10.12, only the pip half of the command ran, in an environment made with virtualenv, which is the energy-forecast/.venv that later sessions use.",
+          "summary": "Started energy-forecast/ as its own git repository, committed locally only: R2 is open, so it has no remote, as docs/known-limitations.md says. The workspace's .gitignore names it. Python 3.10 or later, with the choices in docs/decisions.md; src/energy_forecast/config.py gives load_config, whose ConfigError names the field; config.example.toml has placeholder site values and metric names (R1 is open) and states each signal's unit and sign; tests/conftest.py fails any test that connects beyond loopback. 80 tests pass. Round 1, the install: the README now gives a second one-line command for a machine without ensurepip, using the standalone virtualenv.pyz. On this machine's system 3.10.12 it ran end to end from fresh copies of the tree, also right after the first command failed in the same folder, and with pip 22.0.2 doing the product's install: 80 tests pass each time, also under unshare -rn. So one documented command works here today. The README's first command has still run end to end only on pyenv's 3.12.13, and stays unverified on 3.10 until R3 is answered, as docs/known-limitations.md records. Round 1, the missing product: its commits are there (2 on main, head 8b51870, 11 tracked files in the first, nothing uncommitted), so nothing was left out. I leave the rest of that finding: the review folder is Golem's, and no session can add the product to it, so R4 asks for that. Until a review sees the product's files, the claims above about them remain unconfirmed by a reviewer.",
           "base": {
             "workspace": "ac7f58ccddec2ee3f8e7864cce666397422c9272",
             "product": "none"
@@ -260,6 +260,12 @@
       "id": "R3",
       "title": "Install python3.10-venv on the machine that runs the sessions",
       "request": "Please run `sudo apt install python3.10-venv` on that machine. The product's documented install command, `python3 -m venv .venv && .venv/bin/pip install -e '.[test]'`, fails there with the system Python because `ensurepip` is missing, and installing a system package needs root, so no session can do it. Sessions can go on without it, with a virtual environment made by virtualenv (see notes/environment.md), so no task waits on this; once it is done, the command works there as the README says.",
+      "status": "open"
+    },
+    {
+      "id": "R4",
+      "title": "Golem's review of a task does not see the product",
+      "request": "The review of M2.2 received only the workspace's diff: no file of energy-forecast/ was in the review folder, so 5 of the task's 6 criteria could not be checked. The product's commits exist, in its own repository, which the workspace's git rightly ignores. Possible causes, which sessions cannot see into: M2.2's base says product 'none', because the repository did not exist when the task started, and VISION.md names no product folder (R2 asks for that). Please make Golem put energy-forecast/, its tree and its diff from the task's base, in the review folder, and repeat M2.2's review with them. No session can do this, as Golem builds that folder. No task waits on this, because later tasks start with a product to record in their base, which may be enough; if their reviews miss the product too, every review of the product will be unable to check it.",
       "status": "open"
     }
   ]

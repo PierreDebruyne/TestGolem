@@ -4,7 +4,7 @@
     {
       "id": "M1",
       "title": "Plan the next milestones",
-      "status": "in-progress",
+      "status": "done",
       "scope": "Plan the next milestones from VISION.md, FEEDBACKS.md, the product's docs/known-limitations.md and history/README.md.",
       "tasks": [
         {
@@ -22,7 +22,15 @@
           "base": {
             "workspace": "c8fd18fa441108e1dc76650e8f58055d501be571",
             "product": "none"
-          }
+          },
+          "reviews": [
+            {
+              "round": 1,
+              "verdict": "approve",
+              "model": "claude-opus-5-5",
+              "findings": []
+            }
+          ]
         }
       ]
     },

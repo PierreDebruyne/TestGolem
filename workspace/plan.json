@@ -4,10 +4,106 @@
     {
       "id": "M1",
       "title": "Plan the next milestones",
+      "status": "in-progress",
+      "scope": "Plan the next milestones from VISION.md, FEEDBACKS.md, the product's docs/known-limitations.md and history/README.md.",
+      "tasks": [
+        {
+          "id": "M1.1",
+          "title": "Plan the next milestones",
+          "status": "done",
+          "kind": "plan",
+          "criteria": [
+            "plan.json holds 1 to 9 new milestones after this one, from VISION.md, FEEDBACKS.md, docs/known-limitations.md and history/README.md, each with its scope and the feedback items it covers",
+            "A new milestone named \"Plan the next milestones\" ends the plan",
+            "The new milestones have no tasks yet: each is planned when it starts"
+          ],
+          "origin": "golem",
+          "base": {
+            "workspace": "c8fd18fa441108e1dc76650e8f58055d501be571",
+            "product": "none"
+          },
+          "summary": "Planned M2 Product foundation and data sources, M3 First complete 24-hour forecast, M4 Forecast service, metrics and archive, M5 Forecast against reality, and M6 Run on the home's data and improve the weakest part, then M7 Plan the next milestones to end the plan. They follow VISION.md's advice: a simple version of every input first, then measure, then improve. FEEDBACKS.md has no items, and the product, its docs/known-limitations.md and history/ do not exist yet, so VISION.md is the only source and each feedback list is empty. Battery control and the electric car stay out, for the next planning. Added requests R1 (Prometheus access and site facts, needed by M6) and R2 (the product's remote and VISION.md's wording); no task exists yet to wait on them, so the session that plans M6 puts R1 in the waiting_on of its tasks."
+        }
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Product foundation and data sources",
+      "status": "planned",
+      "scope": "Start the product in its own git repository, in the workspace subfolder energy-forecast/, with its language, layout and test setup recorded in docs/decisions.md, and docs/known-limitations.md started. The configuration holds the site (location, time zone, solar peak power), the Prometheus URL and one PromQL query per signal (grid import and export, solar, battery, heating, indoor and outdoor temperature), so that the home's real metric names only touch the configuration. Read these signals from Prometheus onto a common 15-minute local-time grid, handling gaps and daylight saving time, and fetch the next 24 hours of temperature and solar/cloud forecast from a public weather service. Use answers/R1.md if it exists; the real Prometheus is not needed here. Done when one command prints these series from a configuration, the README says how to install and run it, and tests cover both sources from recorded or synthetic responses, without network.",
+      "feedback": [],
+      "after": [
+        "M1"
+      ],
+      "tasks": []
+    },
+    {
+      "id": "M3",
+      "title": "First complete 24-hour forecast",
+      "status": "planned",
+      "scope": "The simplest model for every input of VISION.md, before improving any of them: household use by time of week from the history, without the heating; a thermal model fitted from the indoor and outdoor temperatures with the heating off and with it on; heating active and heating power over the next 24 hours from the temperature forecast; solar generation from the solar/cloud forecast, scaled by a factor fitted on the history. Combine them into a forecast per 15 minutes of household use, heating, solar and net grid power before the battery, flagging the slots above the capacity tariff's limit (2.5 kW by default). Done when one command outputs this forecast with all its intermediate values in a documented format, and each model has tests on synthetic data with a known answer. Battery control and the electric car stay out.",
+      "feedback": [],
+      "after": [
+        "M2"
+      ],
+      "tasks": []
+    },
+    {
+      "id": "M4",
+      "title": "Forecast service, metrics and archive",
+      "status": "planned",
+      "scope": "Run the forecast as a service, on a schedule. It exports every internal value and intermediate prediction (forecast solar, forecast temperature, forecast heating active, fitted parameters, run status) as Prometheus metrics, with a documented catalogue, and archives each run so that any prediction can be compared later with what happened. It offers the latest forecast in a documented form that the future battery control can read. When Prometheus or the weather service fails, it retries, keeps the last good forecast and shows its age in a metric, rather than stopping. Done when the docs say how to install and configure it on a new machine, and tests cover the schedule, the archive, the failure paths and a scrape of the metrics from a service run against fake sources.",
+      "feedback": [],
+      "after": [
+        "M3"
+      ],
+      "tasks": []
+    },
+    {
+      "id": "M5",
+      "title": "Forecast against reality",
+      "status": "planned",
+      "scope": "Measure the forecast. Compare the archived forecasts with what happened, per intermediate value (solar, temperature, heating active, household use, net grid power) and per horizon, with the error and the bias exported as metrics and given by a report command. A backtest replays the models over past history, beside a naive reference (the same slot a week before), so that quality can be judged without waiting weeks. A dashboard definition shows forecast against actual. Done when the report, the backtest and the dashboard are documented, and tests on synthetic data with known errors check the figures.",
+      "feedback": [],
+      "after": [
+        "M4"
+      ],
+      "tasks": []
+    },
+    {
+      "id": "M6",
+      "title": "Run on the home's data and improve the weakest part",
+      "status": "planned",
+      "scope": "Needs request R1: the session that plans this milestone puts it in the waiting_on of the tasks that need the real data. Point the service and the backtest at the home's Prometheus, fix what real data breaks (units, signs, gaps, short retention), and check that the fitted thermal and solar parameters are plausible. Then, from the backtest, improve the one or two parts that cause the largest error on the 15-minute net grid forecast, keeping the code simple. Done when the docs hold the backtest results on real data before and after the changes, and docs/known-limitations.md says what is left.",
+      "feedback": [],
+      "after": [
+        "M5"
+      ],
+      "tasks": []
+    },
+    {
+      "id": "M7",
+      "title": "Plan the next milestones",
       "status": "planned",
       "scope": "Plan the next milestones from VISION.md, FEEDBACKS.md, the product's docs/known-limitations.md and history/README.md.",
+      "after": [
+        "M6"
+      ],
       "tasks": []
     }
   ],
-  "requests": []
+  "requests": [
+    {
+      "id": "R1",
+      "title": "Access to the home's Prometheus, and the facts of the site",
+      "request": "Sessions cannot reach the home's data: nothing answers at localhost:9090 on the machine that runs them, and VISION.md gives no address or metric names. Please give: (1) a Prometheus URL reachable from that machine, read-only is enough, or else an export of the signals below covering several weeks; (2) the metric name, unit and sign for grid import and export, solar generation, battery charge and discharge, heating power or heating on/off, indoor temperature and outdoor temperature, and how far back the history goes; (3) the home's location for the weather forecast (the nearest town is enough) and the solar panels' peak power, with their orientation if known. M2 to M5 can go on without it, on synthetic data with the metric names in the configuration; M6, which runs on the real data, cannot.",
+      "status": "open"
+    },
+    {
+      "id": "R2",
+      "title": "The product's remote, and VISION.md's wording",
+      "request": "M2 starts the product in its own git repository, in the workspace subfolder energy-forecast/. WORKFLOW.md asks to push it, and no remote exists. Please give the URL of an empty repository that sessions can push to, or allow them to create a private one under the account of the workspace's remote. Until then the product is only committed locally, and would be lost with this machine. Also, for VISION.md, which sessions may not edit: WORKFLOW.md says that it names the folders, so please add energy-forecast/ there. Its lines on a 'launcher' and on 'libraries listed below' look left over from a template: sessions read 'launcher' as the forecast service and take no library as suggested; please correct VISION.md if that is wrong.",
+      "status": "open"
+    }
+  ]
 }

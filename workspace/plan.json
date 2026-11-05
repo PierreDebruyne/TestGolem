@@ -40,7 +40,7 @@
           "id": "M2.2",
           "title": "Start the product: repository, layout, test setup and configuration",
           "details": "Create energy-forecast/ as its own git repository. Python is the expected language (simple numeric fits in M3, a Prometheus client in M4); the session decides and records why. R2 is open, so there is no remote: when answers/R2.md exists, add the remote and push; otherwise commit locally and say so in the summary. When answers/R1.md exists, use its facts in the example configuration; otherwise use placeholder metric names. Signals: grid_import, grid_export, solar, battery, heating, indoor_temperature, outdoor_temperature.",
-          "status": "planned",
+          "status": "done",
           "kind": "code",
           "criteria": [
             "energy-forecast/ is a git repository of its own with the work committed, and the workspace's .gitignore names it, so that git add . from the workspace stages neither its files nor a gitlink",
@@ -52,7 +52,12 @@
           ],
           "notes": [
             "environment"
-          ]
+          ],
+          "base": {
+            "workspace": "ac7f58ccddec2ee3f8e7864cce666397422c9272",
+            "product": "none"
+          },
+          "summary": "Started energy-forecast/ as its own git repository, committed locally only: R2 is open, so it has no remote, as docs/known-limitations.md says. The workspace's .gitignore names it. Python 3.10 or later, with the choices in docs/decisions.md; src/energy_forecast/config.py gives load_config, whose ConfigError names the field; config.example.toml has placeholder site values and metric names (R1 is open) and states each signal's unit and sign; tests/conftest.py fails any test that connects beyond loopback. 80 tests pass, also under unshare -rn. One thing differs from what criterion 3 suggests: the documented install command fails with this machine's system Python, which lacks python3.10-venv (M2.1's note wrongly had it working, now corrected). I could not install that package, so R3 asks for it, with no task waiting on it. I checked the command as written from a fresh clone with pyenv's base 3.12.13, used read-only in a temporary folder despite the note's advice against pyenv; on the system 3.10.12, only the pip half of the command ran, in an environment made with virtualenv, which is the energy-forecast/.venv that later sessions use."
         },
         {
           "id": "M2.3",
@@ -227,6 +232,12 @@
       "id": "R2",
       "title": "The product's remote, and VISION.md's wording",
       "request": "M2 starts the product in its own git repository, in the workspace subfolder energy-forecast/. WORKFLOW.md asks to push it, and no remote exists. Please give the URL of an empty repository that sessions can push to, or allow them to create a private one under the account of the workspace's remote. Until then the product is only committed locally, and would be lost with this machine. Also, for VISION.md, which sessions may not edit: WORKFLOW.md says that it names the folders, so please add energy-forecast/ there. Its lines on a 'launcher' and on 'libraries listed below' look left over from a template: sessions read 'launcher' as the forecast service and take no library as suggested; please correct VISION.md if that is wrong.",
+      "status": "open"
+    },
+    {
+      "id": "R3",
+      "title": "Install python3.10-venv on the machine that runs the sessions",
+      "request": "Please run `sudo apt install python3.10-venv` on that machine. The product's documented install command, `python3 -m venv .venv && .venv/bin/pip install -e '.[test]'`, fails there with the system Python because `ensurepip` is missing, and installing a system package needs root, so no session can do it. Sessions can go on without it, with a virtual environment made by virtualenv (see notes/environment.md), so no task waits on this; once it is done, the command works there as the README says.",
       "status": "open"
     }
   ]

@@ -20,7 +20,7 @@ Checked on 2026-11-05, on the machine that runs the sessions.
 - To test what is committed rather than the working tree, clone the product to a temporary folder and run, from the
   clone, `PYTHONPATH=$PWD/src <product>/.venv/bin/python -m pytest -q`: `PYTHONPATH` takes precedence over the editable
   install, so the clone's package is the one imported.
-- Golem's review folder has not held the product so far: M2.2 and M2.3 came back with that finding, and their `base`
+- Golem's review folder has not held the product so far: M2.2, M2.3 and M2.4 came back with that finding, and their `base`
   says product `none` (R4, R5). A session cannot fix it: check the commit and a test run, and say so in the `summary`.
 - numpy, requests, httpx and PyYAML happen to be in the system Python, pandas is not. Declare what the product needs
   and do not count on them.

@@ -1,5 +1,13 @@
 {
   "format": 1,
-  "milestones": [],
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Plan the next milestones",
+      "status": "planned",
+      "scope": "Plan the next milestones from VISION.md, FEEDBACKS.md, the product's docs/known-limitations.md and history/README.md.",
+      "tasks": []
+    }
+  ],
   "requests": []
 }

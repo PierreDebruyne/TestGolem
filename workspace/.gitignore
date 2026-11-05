@@ -1,2 +1,3 @@
 # The product has its own git repository (see WORKFLOW.md): never record it here, not even as a gitlink.
 energy-forecast/
+*.tmp

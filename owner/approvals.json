@@ -8,6 +8,14 @@
       "at": "2026-11-05T13:15:41Z",
       "by": "pierre",
       "note": null
+    },
+    {
+      "milestone": "M2",
+      "verdict": "approved",
+      "sha256": "7d0600631010a7931e02da1c1c7e17d19678144537a6d7a8e8c1b9bd6b4973c6",
+      "at": "2026-11-05T13:27:20Z",
+      "by": "pierre",
+      "note": null
     }
   ]
 }

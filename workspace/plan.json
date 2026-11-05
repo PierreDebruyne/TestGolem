@@ -78,6 +78,19 @@
                   "fix": "Make the product's README state the prerequisite (python3-venv or ensurepip on Debian and Ubuntu) and give a one-command way to install without it, if it does not already. Check this when the product is available. Run the full command on a 3.10 interpreter once R3 is answered, and record in docs/known-limitations.md that this is still unverified until then."
                 }
               ]
+            },
+            {
+              "round": 2,
+              "verdict": "changes",
+              "model": "claude-opus-5-5",
+              "findings": [
+                {
+                  "severity": "high",
+                  "path": "energy-forecast/",
+                  "problem": "The product is again missing from the review folder. workspace/ has no energy-forecast/ folder, and workspace.diff touches only .gitignore, notes/README.md, notes/environment.md and plan.json. Only the .gitignore part of criterion 1 can be confirmed; the rest of it and criteria 2 to 6 rest on the session's summary alone, and the summary itself says they remain unconfirmed by a reviewer. This also leaves round 1's medium finding on the install open: the README's prerequisite and second command, the known-limitations entry on the unverified 3.10 run, and the 3.10 run itself cannot be seen. The folder shows no defect in the product, and the cause looks outside the session's reach: Golem builds the review folder, and M2.2's base records product 'none' (workspace/plan.json:59). The session has reported this as R4, which is still open, so a further session round cannot resolve it.",
+                  "fix": "Golem or the owner should answer R4: put energy-forecast/, with its tree and its diff from the empty base, in the review folder, then repeat M2.2's review. That review should judge criteria 1 to 6 on the files and a test run, and check round 1's install finding, including the README's prerequisite and second command and the known-limitations entry. The run of the first command on 3.10 can wait until R3 is answered. If the owner instead accepts the task without a review of the product, that should be recorded as their decision, because this review does not confirm those criteria."
+                }
+              ]
             }
           ]
         },

@@ -53,11 +53,11 @@
           "notes": [
             "environment"
           ],
+          "summary": "Started energy-forecast/ as its own git repository, committed locally only: R2 is open, so it has no remote, as docs/known-limitations.md says. The workspace's .gitignore names it. Python 3.10 or later, with the choices in docs/decisions.md; src/energy_forecast/config.py gives load_config, whose ConfigError names the field; config.example.toml has placeholder site values and metric names (R1 is open) and states each signal's unit and sign; tests/conftest.py fails any test that connects beyond loopback. 80 tests pass, also under unshare -rn. One thing differs from what criterion 3 suggests: the documented install command fails with this machine's system Python, which lacks python3.10-venv (M2.1's note wrongly had it working, now corrected). I could not install that package, so R3 asks for it, with no task waiting on it. I checked the command as written from a fresh clone with pyenv's base 3.12.13, used read-only in a temporary folder despite the note's advice against pyenv; on the system 3.10.12, only the pip half of the command ran, in an environment made with virtualenv, which is the energy-forecast/.venv that later sessions use.",
           "base": {
             "workspace": "ac7f58ccddec2ee3f8e7864cce666397422c9272",
             "product": "none"
-          },
-          "summary": "Started energy-forecast/ as its own git repository, committed locally only: R2 is open, so it has no remote, as docs/known-limitations.md says. The workspace's .gitignore names it. Python 3.10 or later, with the choices in docs/decisions.md; src/energy_forecast/config.py gives load_config, whose ConfigError names the field; config.example.toml has placeholder site values and metric names (R1 is open) and states each signal's unit and sign; tests/conftest.py fails any test that connects beyond loopback. 80 tests pass, also under unshare -rn. One thing differs from what criterion 3 suggests: the documented install command fails with this machine's system Python, which lacks python3.10-venv (M2.1's note wrongly had it working, now corrected). I could not install that package, so R3 asks for it, with no task waiting on it. I checked the command as written from a fresh clone with pyenv's base 3.12.13, used read-only in a temporary folder despite the note's advice against pyenv; on the system 3.10.12, only the pip half of the command ran, in an environment made with virtualenv, which is the energy-forecast/.venv that later sessions use."
+          }
         },
         {
           "id": "M2.3",

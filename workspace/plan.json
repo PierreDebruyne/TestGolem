@@ -40,7 +40,7 @@
           "id": "M2.2",
           "title": "Start the product: repository, layout, test setup and configuration",
           "details": "Create energy-forecast/ as its own git repository. Python is the expected language (simple numeric fits in M3, a Prometheus client in M4); the session decides and records why. R2 is open, so there is no remote: when answers/R2.md exists, add the remote and push; otherwise commit locally and say so in the summary. When answers/R1.md exists, use its facts in the example configuration; otherwise use placeholder metric names. Signals: grid_import, grid_export, solar, battery, heating, indoor_temperature, outdoor_temperature.",
-          "status": "done",
+          "status": "in-progress",
           "kind": "code",
           "criteria": [
             "energy-forecast/ is a git repository of its own with the work committed, and the workspace's .gitignore names it, so that git add . from the workspace stages neither its files nor a gitlink",
@@ -57,7 +57,29 @@
           "base": {
             "workspace": "ac7f58ccddec2ee3f8e7864cce666397422c9272",
             "product": "none"
-          }
+          },
+          "reviews": [
+            {
+              "round": 1,
+              "verdict": "changes",
+              "model": "claude-opus-5-5",
+              "findings": [
+                {
+                  "severity": "high",
+                  "path": "energy-forecast/",
+                  "problem": "The product is not in the review folder: workspace.diff touches only .gitignore, notes/README.md, notes/environment.md and plan.json, and no source, test, config or docs file of the product exists there. Five of the six criteria concern those files, so they cannot be checked and the summary's claims stay unconfirmed. The likely cause is the export rather than the session: the workspace's git ignores the folder, and VISION.md names no product folder, which R2 already reports. The folder cannot rule out the other reading, that the product work was never committed.",
+                  "fix": "Confirm that energy-forecast/ has its commits (git -C energy-forecast log, status), committing anything left out. Then repeat the review with the product's tree and diff included in the review folder, so that criteria 1 to 6 can be judged on the files and a test run."
+                },
+                {
+                  "severity": "medium",
+                  "path": "workspace/notes/environment.md",
+                  "line": 7,
+                  "problem": "Criterion 3 is not shown to hold on the project's own machine. There `python3` is the system 3.10.12, and the documented install command fails on it because ensurepip is missing. The command as written ran only on pyenv 3.12.13, so it has never run end to end on the declared minimum, 3.10, where the conditional tomli dependency applies. The working alternative for this machine is visible only in the workspace notes (environment.md:11), which someone installing from the product repository would not have. The session disclosed this and opened R3, but R3 does not make the criterion true while it is open.",
+                  "fix": "Make the product's README state the prerequisite (python3-venv or ensurepip on Debian and Ubuntu) and give a one-command way to install without it, if it does not already. Check this when the product is available. Run the full command on a 3.10 interpreter once R3 is answered, and record in docs/known-limitations.md that this is still unverified until then."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "M2.3",

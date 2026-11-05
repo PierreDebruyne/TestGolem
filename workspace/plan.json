@@ -98,7 +98,7 @@
           "id": "M2.3",
           "title": "The common 15-minute local-time grid",
           "details": "One small module that both sources use. Slots are defined on UTC instants and their local time comes from the site's time zone; a slot is labelled by its start and covers the 15 minutes after it. Missing values stay visible, so that M3 and later analysis can tell measured values from filled ones.",
-          "status": "in-progress",
+          "status": "done",
           "kind": "code",
           "criteria": [
             "A function gives the slots of a time range in the site's time zone, each with its UTC instant and its local time with UTC offset, aligned on :00, :15, :30 and :45 local",
@@ -114,7 +114,7 @@
           "after": [
             "M2.2"
           ],
-          "summary": "Added src/energy_forecast/grid.py: slots_in_range gives Slot(utc, local), with local at a fixed UTC offset; place_samples averages samples per slot and gives SlotValue with value None when missing; fill_gaps interpolates runs of up to max_gap_slots along UTC instants and sets filled. The configuration gained the required grid.max_gap_slots (Config.max_gap_slots, 4 in the example). tests/test_grid.py covers Brussels at 96, 92 and 100 slots, sample placement including an empty input, and the gap rule including the limit, one past it, the series' ends and both daylight saving changes; tests/test_config.py covers the new field. docs/decisions.md records the label convention, the missing value and the gap rule, and docs/known-limitations.md the single limit for all signals. The 156 tests pass on 3.10.12 and 3.12.13, without network and on the pip tzdata alone. The product stays committed locally only, as R2 is open.",
+          "summary": "Added src/energy_forecast/grid.py: slots_in_range gives Slot(utc, local), with local at a fixed UTC offset; place_samples averages samples per slot and gives SlotValue with value None when missing; fill_gaps interpolates runs of up to max_gap_slots along UTC instants and sets filled. The configuration gained the required grid.max_gap_slots (Config.max_gap_slots, 4 in the example). tests/test_grid.py covers Brussels at 96, 92 and 100 slots, sample placement including an empty input, and the gap rule including the limit, one past it, the series' ends and both daylight saving changes; tests/test_config.py covers the new field. docs/decisions.md records the label convention, the missing value and the gap rule, and docs/known-limitations.md the single limit for all signals. The 156 tests pass on 3.10.12 and 3.12.13, without network and on the pip tzdata alone. The product stays committed locally only, as R2 is open. Review round 1 could not see the product, and its finding stays open because no session can fix it: Golem builds the review folder and sets the base, and a session may change neither. So no review has confirmed the five criteria yet. As the finding asks, I checked the commit: product commit 23ce371, on top of 8b51870, leaves a clean status, and a fresh clone of it passes all 156 tests. The finding also asks to add to R4, but a session may change only the requests that it adds, so the new request R5 holds those facts, with the real base commit for repeating the review.",
           "base": {
             "workspace": "b3f824e7bdbb3a5782f2ba49c51374b75654c7b6",
             "product": "none"
@@ -299,6 +299,12 @@
       "id": "R4",
       "title": "Golem's review of a task does not see the product",
       "request": "The review of M2.2 received only the workspace's diff: no file of energy-forecast/ was in the review folder, so 5 of the task's 6 criteria could not be checked. The product's commits exist, in its own repository, which the workspace's git rightly ignores. Possible causes, which sessions cannot see into: M2.2's base says product 'none', because the repository did not exist when the task started, and VISION.md names no product folder (R2 asks for that). Please make Golem put energy-forecast/, its tree and its diff from the task's base, in the review folder, and repeat M2.2's review with them. No session can do this, as Golem builds that folder. No task waits on this, because later tasks start with a product to record in their base, which may be enough; if their reviews miss the product too, every review of the product will be unable to check it.",
+      "status": "open"
+    },
+    {
+      "id": "R5",
+      "title": "Reviews of the product's tasks still do not see the product",
+      "request": "This adds to R4, which a session may not change, as WORKFLOW.md lets it change only the requests that it adds. R4 hoped that tasks started after the repository existed would record a product in their base. They do not: M2.3 started after M2.2 had created energy-forecast/, yet its base says product 'none', and round 1 of its review had no file of the product, so it could check none of the five criteria. No session can fix this: Golem builds the review folder and sets the base. VISION.md, which may be how Golem finds the product, names no product folder (R2 asks for that). Please make Golem record the product's commit in the base and put energy-forecast/, its tree and its diff from the base, in the review folder. Then repeat the review of M2.3, whose real base is the product's commit 8b51870 and whose work is commit 23ce371, and that of M2.2, as R4 asks. No task waits on this, because the code can still be written. But until it is answered, each product task's review will return this same finding, at the cost of a round, and none of the product's work will have been reviewed; if you would rather pause the work until then, please say so. Two other answers are yours to give: accept these tasks without a review of the product, or allow sessions to copy each task's diff into the workspace for its review. Sessions do not do the latter on their own, as it would put the product's code in the workspace's repository and on its remote, while R2 leaves the product's remote to you.",
       "status": "open"
     }
   ]

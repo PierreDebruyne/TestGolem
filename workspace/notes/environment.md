@@ -17,6 +17,11 @@ Checked on 2026-11-05, on the machine that runs the sessions.
   so tests with a loopback server need `unshare -rn sh -c 'ip link set lo up && .venv/bin/pytest -q'`.
 - To check that the product works on the pip package `tzdata` alone, as on a machine with no system database:
   `PYTHONTZPATH= .venv/bin/pytest -q` (the empty variable stops `zoneinfo` from searching the system folders).
+- To test what is committed rather than the working tree, clone the product to a temporary folder and run, from the
+  clone, `PYTHONPATH=$PWD/src <product>/.venv/bin/python -m pytest -q`: `PYTHONPATH` takes precedence over the editable
+  install, so the clone's package is the one imported.
+- Golem's review folder has not held the product so far: M2.2 and M2.3 came back with that finding, and their `base`
+  says product `none` (R4, R5). A session cannot fix it: check the commit and a test run, and say so in the `summary`.
 - numpy, requests, httpx and PyYAML happen to be in the system Python, pandas is not. Declare what the product needs
   and do not count on them.
 - PyPI and api.open-meteo.com answer. No Prometheus answers on localhost:9090, and no `prometheus` binary is installed.

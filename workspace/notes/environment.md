@@ -24,6 +24,9 @@ Checked on 2026-11-05, on the machine that runs the sessions.
   says product `none` (R4, R5). A session cannot fix it: check the commit and a test run, and say so in the `summary`.
 - numpy, requests, httpx and PyYAML happen to be in the system Python, pandas is not. Declare what the product needs
   and do not count on them.
-- PyPI and api.open-meteo.com answer. No Prometheus answers on localhost:9090, and no `prometheus` binary is installed.
+- PyPI, GitHub and api.open-meteo.com answer. No Prometheus answers on localhost:9090, and no `prometheus` binary is
+  installed. A session's permission check refuses to run a binary downloaded from outside, as tried with Prometheus's
+  release on 2026-11-05 ("Code from External"), whereas fetching its source as text works. Python packages from PyPI
+  have not met this.
 - The workspace's `.gitignore` names `energy-forecast/`: without it, `git add .` from the workspace would record the
   product's repository as an embedded gitlink. The product's repository has no remote while R2 is open.

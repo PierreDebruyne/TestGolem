@@ -21,12 +21,20 @@ Probed on 2026-11-05 for Brussels, with `minutely_15=temperature_2m,cloud_cover,
   now is exactly on a boundary, that slot is not one of the 96.
 - A bad request gives HTTP 400 and `{"error":true,"reason":"Latitude must be in range of -90 to 90°. Given: 95.0."}`.
 
-## Prometheus HTTP API (known behaviour, not checked here: no server is reachable)
+## Prometheus HTTP API (from the source and docs of v3.15.1, on raw.githubusercontent.com; never run here)
 
 - `GET /api/v1/query_range?query=&start=&end=&step=` answers `{"status":"success","data":{"resultType":"matrix",
   "result":[{"metric":{...},"values":[[<unix time>,"<value as text>"],...]}]}}`. A step without data is simply absent
-  from `values`, and a value may be the text `NaN` or `+Inf`.
-- A request of more than 11,000 steps per series is refused, about 114 days at 15 minutes: split long ranges.
+  from `values`, and a value may be the text `NaN`, `+Inf` or `-Inf`. A time has no decimals unless it has milliseconds.
+  A series may hold `histograms` instead of `values` (native histograms): the reader takes that as a bad reply.
+- Errors are `{"status":"error","errorType":...,"error":...}`, with 400 for bad parameters, 422 for an expression that
+  cannot be executed and 503 for a timeout. A success may also carry `warnings` and `infos`, which the reader ignores.
+- `(end - start) / step > 11000` gives 400 `bad_data`, so 11,001 evaluations pass: about 114 days at 15 minutes. The
+  reader's parts stop at 11,000 evaluations.
 - A range query evaluates the expression at each step. A bare gauge gives the last sample at that instant, looking
   back up to 5 minutes, not an average. `avg_over_time(x[15m])` at T averages over the 15 minutes before T, which is
-  what the capacity tariff measures, so evaluate at the slot's end. Counters take `rate(x[15m])`.
+  what the capacity tariff measures, so evaluate at the slot's end. Counters take `rate(x[15m])`. A range is left-open
+  in Prometheus 3, and closed at both ends in 2.
+- A step later than now evaluates on the samples so far, so a slot in progress gets a mean of its first minutes (expected
+  from the above, not observed): M2.6's past range must end at the last slot that has ended. `slots_in_range(start, now,
+  zone)` does not ensure this, as its last slot may be in progress.

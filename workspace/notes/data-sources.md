@@ -17,6 +17,8 @@ Probed on 2026-11-05 for Brussels, with `minutely_15=temperature_2m,cloud_cover,
   data elsewhere.
 - `start_minutely_15` and `end_minutely_15` accept past dates, which gives a recorded response across a DST change.
   `past_days=92` is accepted (8928 values, back to 2026-08-05), which M3's solar factor can use.
+- `grid.slots_in_range` starts at the first boundary at or after its start, whereas M2.5's slots start after now: when
+  now is exactly on a boundary, that slot is not one of the 96.
 - A bad request gives HTTP 400 and `{"error":true,"reason":"Latitude must be in range of -90 to 90°. Given: 95.0."}`.
 
 ## Prometheus HTTP API (known behaviour, not checked here: no server is reachable)

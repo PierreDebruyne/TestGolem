@@ -15,6 +15,8 @@ Checked on 2026-11-05, on the machine that runs the sessions.
   found`), and `python3 -m pytest` has no module either. Use the product's `.venv/bin/pytest`.
 - To check that the tests need no network: `unshare -rn .venv/bin/pytest -q`. That namespace leaves loopback down too,
   so tests with a loopback server need `unshare -rn sh -c 'ip link set lo up && .venv/bin/pytest -q'`.
+- To check that the product works on the pip package `tzdata` alone, as on a machine with no system database:
+  `PYTHONTZPATH= .venv/bin/pytest -q` (the empty variable stops `zoneinfo` from searching the system folders).
 - numpy, requests, httpx and PyYAML happen to be in the system Python, pandas is not. Declare what the product needs
   and do not count on them.
 - PyPI and api.open-meteo.com answer. No Prometheus answers on localhost:9090, and no `prometheus` binary is installed.

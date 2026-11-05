@@ -98,7 +98,7 @@
           "id": "M2.3",
           "title": "The common 15-minute local-time grid",
           "details": "One small module that both sources use. Slots are defined on UTC instants and their local time comes from the site's time zone; a slot is labelled by its start and covers the 15 minutes after it. Missing values stay visible, so that M3 and later analysis can tell measured values from filled ones.",
-          "status": "planned",
+          "status": "done",
           "kind": "code",
           "criteria": [
             "A function gives the slots of a time range in the site's time zone, each with its UTC instant and its local time with UTC offset, aligned on :00, :15, :30 and :45 local",
@@ -113,7 +113,12 @@
           ],
           "after": [
             "M2.2"
-          ]
+          ],
+          "base": {
+            "workspace": "b3f824e7bdbb3a5782f2ba49c51374b75654c7b6",
+            "product": "none"
+          },
+          "summary": "Added src/energy_forecast/grid.py: slots_in_range gives Slot(utc, local), with local at a fixed UTC offset; place_samples averages samples per slot and gives SlotValue with value None when missing; fill_gaps interpolates runs of up to max_gap_slots along UTC instants and sets filled. The configuration gained the required grid.max_gap_slots (Config.max_gap_slots, 4 in the example). tests/test_grid.py covers Brussels at 96, 92 and 100 slots, sample placement including an empty input, and the gap rule including the limit, one past it, the series' ends and both daylight saving changes; tests/test_config.py covers the new field. docs/decisions.md records the label convention, the missing value and the gap rule, and docs/known-limitations.md the single limit for all signals. The 156 tests pass on 3.10.12 and 3.12.13, without network and on the pip tzdata alone. The product stays committed locally only, as R2 is open."
         },
         {
           "id": "M2.4",
